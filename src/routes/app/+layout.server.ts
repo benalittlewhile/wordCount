@@ -1,4 +1,5 @@
-import { DISCORD_OAUTH_CLIENT_ID, DISCORD_OAUTH_CLIENT_SECRET } from '$env/static/private';
+import { DISCORD_OAUTH_CLIENT_SECRET } from '$env/static/private';
+import { PUBLIC_DISCORD_OAUTH_CLIENT_ID, PUBLIC_DISCORD_REDIRECT_URI } from '$env/static/public';
 
 export async function load({ cookies, url }) {
 	const code = url.searchParams.get('code');
@@ -14,9 +15,9 @@ export async function load({ cookies, url }) {
 				body: new URLSearchParams({
 					grant_type: 'authorization_code',
 					code: code,
-					client_id: DISCORD_OAUTH_CLIENT_ID,
+					client_id: PUBLIC_DISCORD_OAUTH_CLIENT_ID,
 					client_secret: DISCORD_OAUTH_CLIENT_SECRET,
-					redirect_uri: 'http://localhost:5173/app'
+					redirect_uri: PUBLIC_DISCORD_REDIRECT_URI
 				})
 			};
 
