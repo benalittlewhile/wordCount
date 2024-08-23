@@ -1,5 +1,6 @@
 import { DISCORD_OAUTH_CLIENT_SECRET } from '$env/static/private';
 import { PUBLIC_DISCORD_OAUTH_CLIENT_ID, PUBLIC_DISCORD_REDIRECT_URI } from '$env/static/public';
+import { UUID_STRING } from '$lib/stringsAndStuff.js';
 
 export async function load({ cookies, url }) {
 	const code = url.searchParams.get('code');
@@ -38,7 +39,12 @@ export async function load({ cookies, url }) {
 					// TODO: type this
 					const id = userDetails.id;
 
-					cookies.set('uuid', id, { path: '/' });
+					cookies.set('uuid', id, {
+						path: '/',
+						httpOnly: true,
+						secure: true,
+						expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14)
+					});
 				}
 			}
 		} catch (error) {
@@ -47,7 +53,7 @@ export async function load({ cookies, url }) {
 	}
 
 	return {
-		uuid: cookies.get('uuid'),
+		uuid: cookies.get(UUID_STRING),
 		primaryColor: '#396fe2'
 	};
 }
