@@ -27,3 +27,23 @@ stretch goals
     to do
 - color customization for projects
   - https://svelte-awesome-color-picker.vercel.app/
+
+pages:
+
+- onboard /app/onboard
+  - form and flow for user to create first project
+    - occurs to me this could be reused any time they want to create a project,
+      but that's probably better as a modal
+  - redirect here if user provides a user id with no associated projects
+  - redirect here when setting user id cookie for the first time
+- dashboard /app
+  - including calendar
+  - including sidebar with overall stats
+- specific project /app/project/(id)
+  - milestone stats per-project
+    - day, week, month, year
+      - weeks start on monday :3
+    - \[stretch] goals
+  - these should be public-workable
+- user page /app/usersettings
+  - settings etc.
