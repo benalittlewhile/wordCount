@@ -15,7 +15,7 @@ CREATE TABLE Projects (
     color IS NULL
     OR color ~* '^#[a-f0-9]{6}$'
   ),
-  deleted_on DATE
+  deleted_on TIMESTAMP
   /* TODO: hex value for associated color */
 );
 
@@ -27,10 +27,10 @@ CREATE TABLE Wordcounts (
   /* time in minutes written on this day */
   minutes_written INTEGER NOT NULL,
   /* following dates need to auto-insert and update */
-  created_on DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_on DATE,
+  created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_on TIMESTAMP,
   /* may not use this */
-  updated_on DATE,
+  updated_on TIMESTAMP,
   constraint minutes_in_day CHECK(
     minutes_written > 0
     AND minutes_written <= 1440
