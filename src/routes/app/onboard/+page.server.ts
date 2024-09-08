@@ -1,4 +1,4 @@
-import { createProjectByNameAndId } from '$lib/pg/projects.js';
+import { createProjectByNameAndUserId } from '$lib/pg/projects.js';
 import { UUID_STRING } from '$lib/stringsAndStuff.js';
 import { redirect } from '@sveltejs/kit';
 
@@ -13,7 +13,7 @@ export const actions = {
 				`onboard action received request to create project with name ${projectName} for user with id ${uuid} `
 			);
 
-			const res = await createProjectByNameAndId(event.locals.pg, projectName.toString(), uuid);
+			const res = await createProjectByNameAndUserId(event.locals.pg, projectName.toString(), uuid);
 
 			if (res?.rows[0].user_id === uuid) {
 				console.log(

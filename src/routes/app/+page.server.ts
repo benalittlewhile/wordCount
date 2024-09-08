@@ -1,6 +1,7 @@
 import { exchangeCodeForToken, getUserDetails } from '$lib/discord';
-import { getProjectsById } from '$lib/pg/projects.js';
+import { getProjectsByUserId } from '$lib/pg/projects.js';
 import { getUserWithId, addUserWithId } from '$lib/pg/users';
+import { getWordCountsByProjectId, updateCountForDate } from '$lib/pg/wordCounts.js';
 import { UUID_STRING } from '$lib/stringsAndStuff.js';
 import { redirect } from '@sveltejs/kit';
 
@@ -46,7 +47,7 @@ export async function load({ cookies, locals, url }) {
 					// projects
 					if (redirectToOnboard === false) {
 						console.log(`checking if user with id ${id} has no projects`);
-						const userProjectsRes = await getProjectsById(locals.pg, id);
+						const userProjectsRes = await getProjectsByUserId(locals.pg, id);
 						if (userProjectsRes?.rowCount === 0) {
 							console.log(`user with id ${id} has no projects, redirecting to onboard`);
 							redirectToOnboard = true;
@@ -69,7 +70,7 @@ export async function load({ cookies, locals, url }) {
 		if (uuid) {
 			// after setting the cookie, need to redirect if user doesn't have any
 			// projects
-			const userProjectRows = await getProjectsById(locals.pg, uuid);
+			const userProjectRows = await getProjectsByUserId(locals.pg, uuid);
 
 			if (userProjectRows?.rowCount === 0) {
 				console.log('redirecting from app/server.layout:103');
@@ -79,23 +80,85 @@ export async function load({ cookies, locals, url }) {
 	}
 
 	let projects: {
-		id: string;
+		project_id: string;
 		user_id: string;
 		project_name: string;
+		counts: { date_counted: Date; minutes_written: number }[];
 	}[] = [];
 
 	const uuid = cookies.get(UUID_STRING);
 
 	if (uuid) {
-		const res = await getProjectsById(locals.pg, uuid);
+		const res = await getProjectsByUserId(locals.pg, uuid);
 		if (res?.rows) {
-			console.log(`retrieved ${res.rowCount} projects`);
-			projects = res.rows;
+			projects = res.rows.map(
+				(row: {
+					id: string;
+					user_id: string;
+					project_name: string;
+					color: string;
+					deleted_on: string;
+				}) => ({
+					project_id: row.id,
+					user_id: row.user_id,
+					project_name: row.project_name,
+					counts: []
+				})
+			);
 		}
 	}
+
+	await Promise.all(
+		projects.map(async (proj) => {
+			const counts = await getWordCountsByProjectId(locals.pg, proj.project_id);
+
+			if (counts.length > 0) {
+				proj.counts = counts;
+			} else {
+				proj.counts = [];
+			}
+		})
+	);
+
+	console.log(JSON.stringify(projects));
 
 	return {
 		projects,
 		uuid
 	};
 }
+
+export const actions = {
+	updateCount: async (event) => {
+		const formData = await event.request.formData();
+		const projectId = formData.get('project_id') as string;
+		console.log(`project id: ${projectId}`);
+		const dateString = formData.get('date_counted') as string;
+		const minutes = Number(formData.get('minutes_written') as string);
+		const uuid = event.cookies.get(UUID_STRING);
+
+		console.log('?updateCount');
+
+		if (projectId && uuid && dateString && minutes) {
+			console.log(
+				`Received request to update wordcount on project ${projectId} by user ${uuid} with value date: ${dateString}, count: ${minutes}`
+			);
+
+			const successId = await updateCountForDate(
+				event.locals.pg,
+				uuid,
+				projectId,
+				dateString,
+				minutes
+			);
+
+			if (successId !== -1) {
+				console.log(
+					`Successfully updated wordCount ${successId} with value date: ${dateString}, count: ${minutes}`
+				);
+			}
+
+			// TODO: probably need to return data for app to render here
+		}
+	}
+};

@@ -1,8 +1,8 @@
 import type { PoolClient } from 'pg';
 
-export async function getProjectsById(pg: PoolClient, id: string) {
+export async function getProjectsByUserId(pg: PoolClient, user_id: string) {
 	try {
-		const res = await pg.query('select * from projects where user_id = $1', [id]);
+		const res = await pg.query('select * from projects where user_id = $1', [user_id]);
 		// TODO: parse into a more usable object
 		return res;
 	} catch (err) {
@@ -10,11 +10,11 @@ export async function getProjectsById(pg: PoolClient, id: string) {
 	}
 }
 
-export async function createProjectByNameAndId(pg: PoolClient, name: string, uuid: string) {
+export async function createProjectByNameAndUserId(pg: PoolClient, name: string, user_id: string) {
 	try {
 		const res = await pg.query(
 			'insert into projects (user_id, project_name) values ($1, $2) returning *',
-			[uuid, name]
+			[user_id, name]
 		);
 		return res;
 	} catch (err) {
