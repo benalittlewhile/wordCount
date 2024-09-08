@@ -14,7 +14,7 @@ const pool = new pg.Pool({
 	database: POSTGRES_DATABASE,
 	password: POSTGRES_PASSWORD,
 	port: 5432,
-	ssl: Boolean(POSTGRES_USE_SSL) ? { rejectUnauthorized: true, ca: POSTGRES_CA } : false
+	ssl: Boolean(POSTGRES_USE_SSL) ? { rejectUnauthorized: false, ca: POSTGRES_CA } : false
 });
 export const connectDb = async () => await pool.connect();
 
