@@ -2,11 +2,7 @@
 	export let data;
 </script>
 
-<h2 color={'blue'}>Pika!</h2>
-
-<h3>{data.uuid}</h3>
-
-{JSON.stringify(data)}
+<h3>Hello! How is your writing?</h3>
 
 {#each data.projects as project}
 	<div style:border="2px solid white">
