@@ -3,14 +3,14 @@ Projects,
 Wordcounts;
 
 INSERT INTO
-  users (id)
+  Users (id)
 VALUES
   (1),
   (2),
   (3);
 
 INSERT INTO
-  Projects (user_id, NAME)
+  Projects (user_id, project_name)
 VALUES
   (1, 'harry potter'),
   (2, 'powerless'),
@@ -25,5 +25,5 @@ INSERT INTO
     minutes_written
   )
 VALUES
-  (2, 1, "December 1, 2808", 30),
-  (1, 1, "november 12, 2014", 60)
+  (2, 1, "2808-06-14", 30),
+  (1, 1, "2014-11-12", 60)

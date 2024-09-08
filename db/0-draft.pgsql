@@ -34,7 +34,8 @@ CREATE TABLE Wordcounts (
   constraint minutes_in_day CHECK(
     minutes_written > 0
     AND minutes_written <= 1440
-  )
+  ),
+  UNIQUE (project_id, date_counted)
 );
 
 /* Don't let users add a wordcount for someone else's project */
