@@ -8,6 +8,9 @@
 [ ] - add calendar to main page
 
 [ ] - user settings page
+  [ ] - delete projects (but not last?)
+  [ ] - change name of a project
+  [ ] - change color of a project
 
 [ ] - logout button
 
