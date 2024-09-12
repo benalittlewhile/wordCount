@@ -26,6 +26,8 @@
 
 [ ] - add project stats page
   [ ] - day, week, month, year, total views with dropdowns
+  [ ] - if these pages are going to be public there needs to be an option to be
+        private. Private by default sounds good.
 
 ----
 
